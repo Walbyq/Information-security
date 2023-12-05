@@ -1,0 +1,5 @@
+﻿  Main.cpp
+C:\Users\Alina\source\repos\CaesarCipher\CaesarCipher\Main.cpp(8,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Alina\source\repos\CaesarCipher\CaesarCipher\Main.cpp(31,21): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Alina\source\repos\CaesarCipher\CaesarCipher\Main.cpp(36,18): warning C4018: >: несоответствие типов со знаком и без знака
+  CaesarCipher.vcxproj -> C:\Users\Alina\source\repos\CaesarCipher\Debug\CaesarCipher.exe
