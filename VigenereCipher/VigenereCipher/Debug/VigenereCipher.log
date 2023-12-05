@@ -1,0 +1,6 @@
+﻿  VigenereCipher.cpp
+C:\Users\Alina\source\repos\VigenereCipher\VigenereCipher\VigenereCipher.cpp(12,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Alina\source\repos\VigenereCipher\VigenereCipher\VigenereCipher.cpp(19,29): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Alina\source\repos\VigenereCipher\VigenereCipher\VigenereCipher.cpp(27,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Alina\source\repos\VigenereCipher\VigenereCipher\VigenereCipher.cpp(37,20): warning C4018: <: несоответствие типов со знаком и без знака
+  VigenereCipher.vcxproj -> C:\Users\Alina\source\repos\VigenereCipher\Debug\VigenereCipher.exe
