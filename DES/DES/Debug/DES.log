@@ -1,0 +1,4 @@
+﻿  main.cpp
+C:\Users\Alina\source\repos\DES\DES\main.cpp(203,46): warning C4244: +=: преобразование "double" в "int", возможна потеря данных
+C:\Users\Alina\source\repos\DES\DES\main.cpp(207,52): warning C4244: +=: преобразование "double" в "int", возможна потеря данных
+  DES.vcxproj -> C:\Users\Alina\source\repos\DES\Debug\DES.exe
