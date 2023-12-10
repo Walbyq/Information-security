@@ -4,15 +4,15 @@
 #include <cmath>
 
 using namespace std;
-const int BITS_64 = 64; //длина 64-битного сообщения
-const int BITS_56 = 56; //длина 56-битного ключа
-const int BITS_48 = 48; //длина 48-битного ключа
+const int BITS_64 = 64; //РґР»РёРЅР° 64-Р±РёС‚РЅРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ
+const int BITS_56 = 56; //РґР»РёРЅР° 56-Р±РёС‚РЅРѕРіРѕ РєР»СЋС‡Р°
+const int BITS_48 = 48; //РґР»РёРЅР° 48-Р±РёС‚РЅРѕРіРѕ РєР»СЋС‡Р°
 
-//начальная перестановка ключа
+//РЅР°С‡Р°Р»СЊРЅР°СЏ РїРµСЂРµСЃС‚Р°РЅРѕРІРєР° РєР»СЋС‡Р°
 vector<bool> getInitalKeySwap(vector<bool> key_64) {
-	vector<bool> key_56; //новый 56-битный ключ
+	vector<bool> key_56; //РЅРѕРІС‹Р№ 56-Р±РёС‚РЅС‹Р№ РєР»СЋС‡
 
-	//таблица перестановок PC-1
+	//С‚Р°Р±Р»РёС†Р° РїРµСЂРµСЃС‚Р°РЅРѕРІРѕРє PC-1
 	const int PC1[] = {
 		57, 49, 41, 33, 25, 17, 9,
 		1, 58, 50, 42, 34, 26, 18,
@@ -24,52 +24,52 @@ vector<bool> getInitalKeySwap(vector<bool> key_64) {
 		21, 13, 5, 28, 20, 12, 4 
 	};
 
-	//перестановка битов по таблице PC-1
+	//РїРµСЂРµСЃС‚Р°РЅРѕРІРєР° Р±РёС‚РѕРІ РїРѕ С‚Р°Р±Р»РёС†Рµ PC-1
 	for (int i = 0; i < BITS_56; i++) key_56.push_back(key_64[PC1[i] - 1]);
 
 	return key_56;
 };
 
-//перестановка битов ключа
+//РїРµСЂРµСЃС‚Р°РЅРѕРІРєР° Р±РёС‚РѕРІ РєР»СЋС‡Р°
 vector<bool> rearrangeKeyBits(vector<bool> key_56, int num) {
-	vector<bool> left_key; //левая половина ключа
-	vector<bool> right_key; //правая половина ключа
+	vector<bool> left_key; //Р»РµРІР°СЏ РїРѕР»РѕРІРёРЅР° РєР»СЋС‡Р°
+	vector<bool> right_key; //РїСЂР°РІР°СЏ РїРѕР»РѕРІРёРЅР° РєР»СЋС‡Р°
 
-	//делим ключ на левую и правую части
+	//РґРµР»РёРј РєР»СЋС‡ РЅР° Р»РµРІСѓСЋ Рё РїСЂР°РІСѓСЋ С‡Р°СЃС‚Рё
 	left_key.insert(left_key.end(), key_56.begin(), key_56.end() - BITS_56 / 2);
 	right_key.insert(right_key.end(), key_56.begin() + BITS_56 / 2, key_56.end());
 
 	key_56.clear();
 
-	//таблица сдвигов битов ключа
+	//С‚Р°Р±Р»РёС†Р° СЃРґРІРёРіРѕРІ Р±РёС‚РѕРІ РєР»СЋС‡Р°
 	const int SHIFT_TABLE[] = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 
-	//определение величины сдвига
+	//РѕРїСЂРµРґРµР»РµРЅРёРµ РІРµР»РёС‡РёРЅС‹ СЃРґРІРёРіР°
 	int shift = 0;
 	for (int i = 0; i < num; i++) {
 		shift += SHIFT_TABLE[i];
 	}
 
-	//цикл на величину сдвига
+	//С†РёРєР» РЅР° РІРµР»РёС‡РёРЅСѓ СЃРґРІРёРіР°
 	for (int i = 0; i < shift; i++) {
-		//храним в памяти 0-й бит
+		//С…СЂР°РЅРёРј РІ РїР°РјСЏС‚Рё 0-Р№ Р±РёС‚
 		bool temp_left = left_key[0];
 		bool temp_right = right_key[0];
-		//сдвиг на 1 бит влево
+		//СЃРґРІРёРі РЅР° 1 Р±РёС‚ РІР»РµРІРѕ
 		for (int j = 0; j < BITS_56 / 2 - 1; j++) {
 			left_key[j] = left_key[j + 1];
 			right_key[j] = right_key[j + 1];
 		}
-		//последний бит принимает значение 0-го
+		//РїРѕСЃР»РµРґРЅРёР№ Р±РёС‚ РїСЂРёРЅРёРјР°РµС‚ Р·РЅР°С‡РµРЅРёРµ 0-РіРѕ
 		left_key[27] = temp_left;
 		right_key[27] = temp_right;
 	}
 
-	//объединение частей в целый ключ
+	//РѕР±СЉРµРґРёРЅРµРЅРёРµ С‡Р°СЃС‚РµР№ РІ С†РµР»С‹Р№ РєР»СЋС‡
 	key_56.insert(key_56.end(), left_key.begin(), left_key.end());
 	key_56.insert(key_56.end(), right_key.begin(), right_key.end());
 
-	//таблица перестановок PC-2
+	//С‚Р°Р±Р»РёС†Р° РїРµСЂРµСЃС‚Р°РЅРѕРІРѕРє PC-2
 	const int PC2[] = {
 		14, 17, 11, 24, 1, 5,
 		3, 28, 15, 6, 21, 10,
@@ -83,15 +83,15 @@ vector<bool> rearrangeKeyBits(vector<bool> key_56, int num) {
 
 	vector<bool> key_48;
 
-	//перестановка битов по таблице PC-2
+	//РїРµСЂРµСЃС‚Р°РЅРѕРІРєР° Р±РёС‚РѕРІ РїРѕ С‚Р°Р±Р»РёС†Рµ PC-2
 	for (int i = 0; i < BITS_48; i++) key_48.push_back(key_56[PC2[i] - 1]);
 
 	return key_48;
 }
 
-//начальная перестановка сообщения
+//РЅР°С‡Р°Р»СЊРЅР°СЏ РїРµСЂРµСЃС‚Р°РЅРѕРІРєР° СЃРѕРѕР±С‰РµРЅРёСЏ
 vector<bool> getInitalTextSwap(vector<bool> text) {
-	//таблица перестановок IP
+	//С‚Р°Р±Р»РёС†Р° РїРµСЂРµСЃС‚Р°РЅРѕРІРѕРє IP
 	const int IP[] = {
 		58, 50, 42, 34, 26, 18, 10, 2,
 		60, 52, 44, 36, 28, 20, 12, 4,
@@ -107,26 +107,26 @@ vector<bool> getInitalTextSwap(vector<bool> text) {
 	temp_text.insert(temp_text.end(), text.begin(), text.end());
 	text.clear();
 
-	//перестановка битов по таблице IP
+	//РїРµСЂРµСЃС‚Р°РЅРѕРІРєР° Р±РёС‚РѕРІ РїРѕ С‚Р°Р±Р»РёС†Рµ IP
 	for (int i = 0; i < BITS_64; i++) text.push_back(temp_text[IP[i] - 1]);
 
 	return text;
 }
 
 vector<bool> rearrangeTextBits(vector<bool> text, vector<bool> key) {
-	vector<bool> left_text; //левая половина текста
-	vector<bool> right_text; //правая половина текста
+	vector<bool> left_text; //Р»РµРІР°СЏ РїРѕР»РѕРІРёРЅР° С‚РµРєСЃС‚Р°
+	vector<bool> right_text; //РїСЂР°РІР°СЏ РїРѕР»РѕРІРёРЅР° С‚РµРєСЃС‚Р°
 
-	//делим текст на левую и правую части
+	//РґРµР»РёРј С‚РµРєСЃС‚ РЅР° Р»РµРІСѓСЋ Рё РїСЂР°РІСѓСЋ С‡Р°СЃС‚Рё
 	left_text.insert(left_text.end(), text.begin(), text.end() - BITS_64 / 2);
 	right_text.insert(right_text.end(), text.begin() + BITS_64 / 2, text.end());
 	text.clear();
 
-	//сохраним значение правой части, которая потом перейдет в левую
+	//СЃРѕС…СЂР°РЅРёРј Р·РЅР°С‡РµРЅРёРµ РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё, РєРѕС‚РѕСЂР°СЏ РїРѕС‚РѕРј РїРµСЂРµР№РґРµС‚ РІ Р»РµРІСѓСЋ
 	vector<bool> old_right_text;
 	old_right_text.insert(old_right_text.end(), right_text.begin(), right_text.end());
 
-	//таблица выбора бит E
+	//С‚Р°Р±Р»РёС†Р° РІС‹Р±РѕСЂР° Р±РёС‚ E
 	const int E[] = {
 		32, 1, 2, 3, 4, 5,
 		4, 5, 6, 7, 8, 9,
@@ -138,16 +138,16 @@ vector<bool> rearrangeTextBits(vector<bool> text, vector<bool> key) {
 		28, 29, 30, 31, 32, 1
 	};
 
-	//расширяем правую часть с 32 до 48 битов с помощью таблицы E
+	//СЂР°СЃС€РёСЂСЏРµРј РїСЂР°РІСѓСЋ С‡Р°СЃС‚СЊ СЃ 32 РґРѕ 48 Р±РёС‚РѕРІ СЃ РїРѕРјРѕС‰СЊСЋ С‚Р°Р±Р»РёС†С‹ E
 	vector<bool> right_text_48;
 	for (int i = 0; i < BITS_48; i++) right_text_48.push_back(right_text[E[i] - 1]);
 	right_text.clear();
 
-	//производим сложение XOR ключа с расширенной частью текста
+	//РїСЂРѕРёР·РІРѕРґРёРј СЃР»РѕР¶РµРЅРёРµ XOR РєР»СЋС‡Р° СЃ СЂР°СЃС€РёСЂРµРЅРЅРѕР№ С‡Р°СЃС‚СЊСЋ С‚РµРєСЃС‚Р°
 	vector<bool> right_text_xor_key;
 	for (int i = 0; i < BITS_48; i++) right_text_xor_key.push_back(right_text_48[i] ^ key[i]);
 
-	//таблицы перестановок S для каждого блока правой части ключа
+	//С‚Р°Р±Р»РёС†С‹ РїРµСЂРµСЃС‚Р°РЅРѕРІРѕРє S РґР»СЏ РєР°Р¶РґРѕРіРѕ Р±Р»РѕРєР° РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё РєР»СЋС‡Р°
 	const int S[8][4][16] = {
 		{	{14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7},
 			{0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8},
@@ -194,37 +194,37 @@ vector<bool> rearrangeTextBits(vector<bool> text, vector<bool> key) {
 		vector<bool> binar_row, binar_column;
 		int row = 0, column = 0;
 		
-		binar_row.push_back(right_text_xor_key[i]); //номер строки определяем по первому
-		binar_row.push_back(right_text_xor_key[i + 5]); //и последнему элементу 6-битного блока
-		binar_column.insert(binar_column.end(), right_text_xor_key.begin() + i + 1, right_text_xor_key.begin() + i + 5); //номер столбца определяем по четырем средним элементам блока
+		binar_row.push_back(right_text_xor_key[i]); //РЅРѕРјРµСЂ СЃС‚СЂРѕРєРё РѕРїСЂРµРґРµР»СЏРµРј РїРѕ РїРµСЂРІРѕРјСѓ
+		binar_row.push_back(right_text_xor_key[i + 5]); //Рё РїРѕСЃР»РµРґРЅРµРјСѓ СЌР»РµРјРµРЅС‚Сѓ 6-Р±РёС‚РЅРѕРіРѕ Р±Р»РѕРєР°
+		binar_column.insert(binar_column.end(), right_text_xor_key.begin() + i + 1, right_text_xor_key.begin() + i + 5); //РЅРѕРјРµСЂ СЃС‚РѕР»Р±С†Р° РѕРїСЂРµРґРµР»СЏРµРј РїРѕ С‡РµС‚С‹СЂРµРј СЃСЂРµРґРЅРёРј СЌР»РµРјРµРЅС‚Р°Рј Р±Р»РѕРєР°
 
-		//перевод в десятичное число битов, определяющих строку
+		//РїРµСЂРµРІРѕРґ РІ РґРµСЃСЏС‚РёС‡РЅРѕРµ С‡РёСЃР»Рѕ Р±РёС‚РѕРІ, РѕРїСЂРµРґРµР»СЏСЋС‰РёС… СЃС‚СЂРѕРєСѓ
 		for (int j = 0; j < 2; j++)
 			if (binar_row[2 - j - 1]) row += pow(2, j);
 
-		//перевод в десятичное число битов, определяющих столбец
+		//РїРµСЂРµРІРѕРґ РІ РґРµСЃСЏС‚РёС‡РЅРѕРµ С‡РёСЃР»Рѕ Р±РёС‚РѕРІ, РѕРїСЂРµРґРµР»СЏСЋС‰РёС… СЃС‚РѕР»Р±РµС†
 		for (int j = 0; j < 4; j++) 
 			if (binar_column[4 - j - 1]) column += pow(2, j);
 
-		//выбираем таблицу S1-S8 и по ней получаем новый блок, записанный в десятичном виде
+		//РІС‹Р±РёСЂР°РµРј С‚Р°Р±Р»РёС†Сѓ S1-S8 Рё РїРѕ РЅРµР№ РїРѕР»СѓС‡Р°РµРј РЅРѕРІС‹Р№ Р±Р»РѕРє, Р·Р°РїРёСЃР°РЅРЅС‹Р№ РІ РґРµСЃСЏС‚РёС‡РЅРѕРј РІРёРґРµ
 		int num = S[i / 6][row][column];
 
-		//переводим полученное значение в двоичную запись числа, получая блок длиной 4 бита
+		//РїРµСЂРµРІРѕРґРёРј РїРѕР»СѓС‡РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РІ РґРІРѕРёС‡РЅСѓСЋ Р·Р°РїРёСЃСЊ С‡РёСЃР»Р°, РїРѕР»СѓС‡Р°СЏ Р±Р»РѕРє РґР»РёРЅРѕР№ 4 Р±РёС‚Р°
 		vector<bool> block;
 		while (num >= 1) {
 			block.push_back(num % 2);
 			num = (num - num % 2) / 2;
 		};
 
-		//запись в блок недостающих битов
+		//Р·Р°РїРёСЃСЊ РІ Р±Р»РѕРє РЅРµРґРѕСЃС‚Р°СЋС‰РёС… Р±РёС‚РѕРІ
 		while (block.size() < 4) block.push_back(0);
 		
-		//переворачиваем блок и сохраняем его в тексте
+		//РїРµСЂРµРІРѕСЂР°С‡РёРІР°РµРј Р±Р»РѕРє Рё СЃРѕС…СЂР°РЅСЏРµРј РµРіРѕ РІ С‚РµРєСЃС‚Рµ
 		for (int j = 3; j >= 0; j--) right_text.push_back(block[j]);
 		block.clear();
 	}
 	
-	//сохраняем значения правой части
+	//СЃРѕС…СЂР°РЅСЏРµРј Р·РЅР°С‡РµРЅРёСЏ РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё
 	vector<bool> temp_right;
 	for (int i = 0; i < BITS_64 / 2; i++) temp_right.push_back(right_text[i]);
 	right_text.clear();
@@ -240,44 +240,44 @@ vector<bool> rearrangeTextBits(vector<bool> text, vector<bool> key) {
 		22, 11, 4, 25,
 	};
 
-	//применяем к ней таблицу перестановок P
+	//РїСЂРёРјРµРЅСЏРµРј Рє РЅРµР№ С‚Р°Р±Р»РёС†Сѓ РїРµСЂРµСЃС‚Р°РЅРѕРІРѕРє P
 	for (int i = 0; i < BITS_64 / 2; i++) right_text.push_back(temp_right[P[i] - 1]);
 	temp_right.clear();
 
-	//сохраняем значения правой и левой части текста
+	//СЃРѕС…СЂР°РЅСЏРµРј Р·РЅР°С‡РµРЅРёСЏ РїСЂР°РІРѕР№ Рё Р»РµРІРѕР№ С‡Р°СЃС‚Рё С‚РµРєСЃС‚Р°
 	vector<bool> temp_left;
 	temp_right.insert(temp_right.end(), right_text.begin(), right_text.end());
 	temp_left.insert(temp_left.end(), left_text.begin(), left_text.end());
 	right_text.clear();
 	left_text.clear();
 
-	//левый блок принимает значение старого правого
+	//Р»РµРІС‹Р№ Р±Р»РѕРє РїСЂРёРЅРёРјР°РµС‚ Р·РЅР°С‡РµРЅРёРµ СЃС‚Р°СЂРѕРіРѕ РїСЂР°РІРѕРіРѕ
 	left_text.insert(left_text.end(), old_right_text.begin(), old_right_text.end());
 
-	//правый блок получаем путем XOR сложения предыдущей левой частью и функцией от правой
+	//РїСЂР°РІС‹Р№ Р±Р»РѕРє РїРѕР»СѓС‡Р°РµРј РїСѓС‚РµРј XOR СЃР»РѕР¶РµРЅРёСЏ РїСЂРµРґС‹РґСѓС‰РµР№ Р»РµРІРѕР№ С‡Р°СЃС‚СЊСЋ Рё С„СѓРЅРєС†РёРµР№ РѕС‚ РїСЂР°РІРѕР№
 	for (int i = 0; i < BITS_64 / 2; i++) right_text.push_back(temp_right[i] ^ temp_left[i]);
 
-	//соединяем обе части в один текст
+	//СЃРѕРµРґРёРЅСЏРµРј РѕР±Рµ С‡Р°СЃС‚Рё РІ РѕРґРёРЅ С‚РµРєСЃС‚
 	text.insert(text.end(), left_text.begin(), left_text.end());
 	text.insert(text.end(), right_text.begin(), right_text.end());
 
 	return text;
 }
 
-//окончательная перестановка текста
+//РѕРєРѕРЅС‡Р°С‚РµР»СЊРЅР°СЏ РїРµСЂРµСЃС‚Р°РЅРѕРІРєР° С‚РµРєСЃС‚Р°
 vector<bool> getFinalTextSwap(vector<bool> text) {
 	vector<bool> left_text, right_text;
 
-	//делим текст на левую и правую части
+	//РґРµР»РёРј С‚РµРєСЃС‚ РЅР° Р»РµРІСѓСЋ Рё РїСЂР°РІСѓСЋ С‡Р°СЃС‚Рё
 	left_text.insert(left_text.end(), text.begin(), text.end() - BITS_64 / 2);
 	right_text.insert(right_text.end(), text.begin() + BITS_64 / 2, text.end());
 	text.clear();
 
-	//записываем левую и правую части в текст, меняя местами
+	//Р·Р°РїРёСЃС‹РІР°РµРј Р»РµРІСѓСЋ Рё РїСЂР°РІСѓСЋ С‡Р°СЃС‚Рё РІ С‚РµРєСЃС‚, РјРµРЅСЏСЏ РјРµСЃС‚Р°РјРё
 	text.insert(text.end(), right_text.begin(), right_text.end());
 	text.insert(text.end(), left_text.begin(), left_text.end());
 
-	//таблица перестановок IP^(-1)
+	//С‚Р°Р±Р»РёС†Р° РїРµСЂРµСЃС‚Р°РЅРѕРІРѕРє IP^(-1)
 	const int INVERSE_IP[] = {
 		40, 8, 48, 16, 56, 24, 64, 32,
 		39, 7, 47, 15, 55, 23, 63, 31,
@@ -289,36 +289,36 @@ vector<bool> getFinalTextSwap(vector<bool> text) {
 		33, 1, 41,  9, 49, 17, 57, 25
 	};
 
-	//сохраняем значение текста
+	//СЃРѕС…СЂР°РЅСЏРµРј Р·РЅР°С‡РµРЅРёРµ С‚РµРєСЃС‚Р°
 	vector<bool> temp_text;
 	temp_text.insert(temp_text.end(), text.begin(), text.end());
 	text.clear();
 
-	//выполняем перестановки по таблице IP^(-1)
+	//РІС‹РїРѕР»РЅСЏРµРј РїРµСЂРµСЃС‚Р°РЅРѕРІРєРё РїРѕ С‚Р°Р±Р»РёС†Рµ IP^(-1)
 	for (int i = 0; i < BITS_64; i++) text.push_back(temp_text[INVERSE_IP[i] - 1]);
 
 	return text;
 }
 
 vector<bool> desCipher(vector<bool> text, vector<bool> key_64) {
-	const int ITERS = 16; //количество итераций
+	const int ITERS = 16; //РєРѕР»РёС‡РµСЃС‚РІРѕ РёС‚РµСЂР°С†РёР№
 
-	//начальная перестановка ключа
+	//РЅР°С‡Р°Р»СЊРЅР°СЏ РїРµСЂРµСЃС‚Р°РЅРѕРІРєР° РєР»СЋС‡Р°
 	vector<bool> key_56 = getInitalKeySwap(key_64);
 
-	//начальная перестановка текста
+	//РЅР°С‡Р°Р»СЊРЅР°СЏ РїРµСЂРµСЃС‚Р°РЅРѕРІРєР° С‚РµРєСЃС‚Р°
 	text = getInitalTextSwap(text);
 
 	int counter = 1;
 	vector<bool> key_48;
 
-	//преобразование сетью Фейстеля
+	//РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃРµС‚СЊСЋ Р¤РµР№СЃС‚РµР»СЏ
 	for (int i = 0; i < ITERS; i++) {
 		key_48 = rearrangeKeyBits(key_56, i + 1);
 		text = rearrangeTextBits(text, key_48);
 	}
 
-	//финальная перестановка текста
+	//С„РёРЅР°Р»СЊРЅР°СЏ РїРµСЂРµСЃС‚Р°РЅРѕРІРєР° С‚РµРєСЃС‚Р°
 	text = getFinalTextSwap(text);
 
 	return text;
@@ -327,7 +327,7 @@ vector<bool> desCipher(vector<bool> text, vector<bool> key_64) {
 int main() {
 	setlocale(LC_ALL, "Russian");
 
-	//изначальный 64-битный ключ в двоичной записи
+	//РёР·РЅР°С‡Р°Р»СЊРЅС‹Р№ 64-Р±РёС‚РЅС‹Р№ РєР»СЋС‡ РІ РґРІРѕРёС‡РЅРѕР№ Р·Р°РїРёСЃРё
 	vector<bool> key_64 { 
 		0, 0, 0, 1, 0, 0, 1, 1, 
 		0, 0, 1, 1, 0, 1, 0, 0, 
@@ -338,7 +338,7 @@ int main() {
 		1, 1, 0, 1, 1, 1, 1, 1, 
 		1, 1, 1, 1, 0, 0, 0, 1 };
 
-	//открытый текст в двоичной записи
+	//РѕС‚РєСЂС‹С‚С‹Р№ С‚РµРєСЃС‚ РІ РґРІРѕРёС‡РЅРѕР№ Р·Р°РїРёСЃРё
 	vector<bool> text{
 		0, 0, 0, 0, 0, 0, 0, 1,
 		0, 0, 1, 0, 0, 0, 1, 1,
@@ -350,19 +350,19 @@ int main() {
 		1, 1, 1, 0, 1, 1, 1, 1
 	};
 
-	//Вывод открытого текста
-	cout << "Открытый текст: \n";
+	//Р’С‹РІРѕРґ РѕС‚РєСЂС‹С‚РѕРіРѕ С‚РµРєСЃС‚Р°
+	cout << "РћС‚РєСЂС‹С‚С‹Р№ С‚РµРєСЃС‚: \n";
 	for (int i = 0; i < BITS_64; i++) {
 		if (i % 8 == 0 && i != 0) cout << " ";
 		cout << text[i];
 	}
 	cout << "\n";
 
-	//шифрование
+	//С€РёС„СЂРѕРІР°РЅРёРµ
 	text = desCipher(text, key_64);
 
-	//вывод зашифрованного текста в двоичной записи
-	cout << "Зашифрованный текст:\n";
+	//РІС‹РІРѕРґ Р·Р°С€РёС„СЂРѕРІР°РЅРЅРѕРіРѕ С‚РµРєСЃС‚Р° РІ РґРІРѕРёС‡РЅРѕР№ Р·Р°РїРёСЃРё
+	cout << "Р—Р°С€РёС„СЂРѕРІР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n";
 	for (int i = 0; i < 64; i++) {
 		if (i % 8 == 0 && i != 0) cout << " ";
 		cout << text[i];
