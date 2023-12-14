@@ -5,15 +5,15 @@
 #include <cstdlib>
 using namespace std;
 
-int text[100]; //открытый текст
-long long cipherText[100]; //зашифрованный текст
+int text[100]; //РѕС‚РєСЂС‹С‚С‹Р№ С‚РµРєСЃС‚
+long long cipherText[100]; //Р·Р°С€РёС„СЂРѕРІР°РЅРЅС‹Р№ С‚РµРєСЃС‚
 int n, e = 0, d;
 
-//двоичное преобразование
+//РґРІРѕРёС‡РЅРѕРµ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ
 int bianaryTransform(int num, int bin_num[]) {
 	int i = 0, mod = 0;
 
-	//преобразуется в двоичный, обратный временно сохраняется в массиве temp []
+	//РїСЂРµРѕР±СЂР°Р·СѓРµС‚СЃСЏ РІ РґРІРѕРёС‡РЅС‹Р№, РѕР±СЂР°С‚РЅС‹Р№ РІСЂРµРјРµРЅРЅРѕ СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ РІ РјР°СЃСЃРёРІРµ temp []
 	while (num != 0) {
 		mod = num % 2;
 		bin_num[i] = mod;
@@ -21,11 +21,11 @@ int bianaryTransform(int num, int bin_num[]) {
 		i++;
 	}
 
-	//возвращает количество цифр в двоичных числах
+	//РІРѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ С†РёС„СЂ РІ РґРІРѕРёС‡РЅС‹С… С‡РёСЃР»Р°С…
 	return i;
 }
 
-//повторное возведение в квадрат в степень
+//РїРѕРІС‚РѕСЂРЅРѕРµ РІРѕР·РІРµРґРµРЅРёРµ РІ РєРІР°РґСЂР°С‚ РІ СЃС‚РµРїРµРЅСЊ
 long long modular_Exonentiation(long long a, int b, int n) {
 	int c = 0, bin_num[1000];
 	long long d = 1;
@@ -42,7 +42,7 @@ long long modular_Exonentiation(long long a, int b, int n) {
 	return d;
 }
 
-//генерация простых чисел в пределах 1000
+//РіРµРЅРµСЂР°С†РёСЏ РїСЂРѕСЃС‚С‹С… С‡РёСЃРµР» РІ РїСЂРµРґРµР»Р°С… 1000
 int producePrimeNumber(int prime[]) {
 	int c = 0, vis[1001];
 	memset(vis, 0, sizeof(vis));
@@ -55,7 +55,7 @@ int producePrimeNumber(int prime[]) {
 	return c;
 }
 
-//расширенный алгоритм Евклида
+//СЂР°СЃС€РёСЂРµРЅРЅС‹Р№ Р°Р»РіРѕСЂРёС‚Рј Р•РІРєР»РёРґР°
 int exgcd(int m, int n, int& x) {
 	int x1, y1, x0, y0, y;
 	x0 = 1; y0 = 0;
@@ -73,13 +73,13 @@ int exgcd(int m, int n, int& x) {
 	return n;
 }
 
-//инициализация RSA
+//РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ RSA
 void RSA_Initialize() {
-	//вынимаем простые числа в пределах 1000 и сохраняем их в массиве prime []
+	//РІС‹РЅРёРјР°РµРј РїСЂРѕСЃС‚С‹Рµ С‡РёСЃР»Р° РІ РїСЂРµРґРµР»Р°С… 1000 Рё СЃРѕС…СЂР°РЅСЏРµРј РёС… РІ РјР°СЃСЃРёРІРµ prime []
 	int prime[5000];
 	int count_Prime = producePrimeNumber(prime);
 
-	//случайно возьмем два простых числа p, q
+	//СЃР»СѓС‡Р°Р№РЅРѕ РІРѕР·СЊРјРµРј РґРІР° РїСЂРѕСЃС‚С‹С… С‡РёСЃР»Р° p, q
 	srand((unsigned)time(NULL));
 	int ranNum1 = rand() % count_Prime;
 	int ranNum2 = rand() % count_Prime;
@@ -87,7 +87,7 @@ void RSA_Initialize() {
 	n = p * q;
 	int On = (p - 1) * (q - 1);
 
-	//используем расширенный алгоритм Евклида, чтобы найти e, d
+	//РёСЃРїРѕР»СЊР·СѓРµРј СЂР°СЃС€РёСЂРµРЅРЅС‹Р№ Р°Р»РіРѕСЂРёС‚Рј Р•РІРєР»РёРґР°, С‡С‚РѕР±С‹ РЅР°Р№С‚Рё e, d
 	for (int j = 3; j < On; j += 1331) {
 		int gcd = exgcd(j, On, d);
 		if (gcd == 1 && d > 0) {
@@ -97,41 +97,41 @@ void RSA_Initialize() {
 	}
 }
 
-//шифрование
+//С€РёС„СЂРѕРІР°РЅРёРµ
 void RSA_Encrypt() {
-	cout << "Открытый ключ (e, n) : e = " << e << " n = " << n << '\n';
-	cout << "Секретный ключ (d, n) : d = " << d << " n = " << n << '\n' << '\n';
+	cout << "РћС‚РєСЂС‹С‚С‹Р№ РєР»СЋС‡ (e, n) : e = " << e << " n = " << n << '\n';
+	cout << "РЎРµРєСЂРµС‚РЅС‹Р№ РєР»СЋС‡ (d, n) : d = " << d << " n = " << n << '\n' << '\n';
 
 	int i = 0;
 	for (i = 0; i < 100; i++)
 		cipherText[i] = modular_Exonentiation(text[i], e, n);
 
-	cout << "Зашифрованное сообщение:" << '\n';
+	cout << "Р—Р°С€РёС„СЂРѕРІР°РЅРЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ:" << '\n';
 	for (i = 0; i < 100; i++)
 		cout << cipherText[i] << " ";
 	cout << '\n' << '\n';
 }
 
-//расшифровка
+//СЂР°СЃС€РёС„СЂРѕРІРєР°
 void RSA_Decrypt() {
 	int i = 0;
 	for (i = 0; i < 100; i++)
 		cipherText[i] = modular_Exonentiation(cipherText[i], d, n);
 
-	cout << "Расшифрованное сообщение:" << '\n';
+	cout << "Р Р°СЃС€РёС„СЂРѕРІР°РЅРЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ:" << '\n';
 	for (i = 0; i < 100; i++)
 		cout << cipherText[i] << " ";
 	cout << '\n' << '\n';
 }
 
-//инициализация алгоритма
+//РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Р°Р»РіРѕСЂРёС‚РјР°
 void initialize() {
 	int i;
 	srand((unsigned)time(NULL));
 	for (i = 0; i < 100; i++)
 		text[i] = rand() % 1000;
 
-	cout << "Открытый текст:" << '\n';
+	cout << "РћС‚РєСЂС‹С‚С‹Р№ С‚РµРєСЃС‚:" << '\n';
 	for (i = 0; i < 100; i++)
 		cout << text[i] << " ";
 	cout << '\n' << '\n';
