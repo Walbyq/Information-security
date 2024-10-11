@@ -45,11 +45,11 @@ int main() {
 	setlocale(LC_ALL, "Russian");
 	string text, word_key, key, encrypted_text, decrypted_text;
 
-	cout << "Ââåäèòå ñîîáùåíèå (EN) : ";
+	cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ (EN) : ";
 	getline(cin, text);
 	text = edit(text);
 
-	cout << "Ââåäèòå êëþ÷åâîå ñëîâî (EN) : ";
+	cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÐºÐ»ÑŽÑ‡ÐµÐ²Ð¾Ðµ ÑÐ»Ð¾Ð²Ð¾ (EN) : ";
 	getline(cin, word_key);
 	word_key = edit(word_key);
 	
@@ -57,14 +57,14 @@ int main() {
 
 	system("cls");
 
-	cout << "Ñîîáùåíèå: " << text << endl
-		<< "Êëþ÷åâîå ñëîâî: " << word_key << endl
-		<< "Êëþ÷: " << key << endl;
+	cout << "Ð¡Ð¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ: " << text << endl
+		<< "ÐšÐ»ÑŽÑ‡ÐµÐ²Ð¾Ðµ ÑÐ»Ð¾Ð²Ð¾: " << word_key << endl
+		<< "ÐšÐ»ÑŽÑ‡: " << key << endl;
 
 	encrypted_text = encryption(text, key);
 	decrypted_text = decryption(encrypted_text, key);
-	cout << "Çàøèôðîâàííîå ñîîáùåíèå: " << encrypted_text << endl
-		<< "Ðàñøèôðîâàííîå ñîîáùåíèå: " << decrypted_text << endl;
+	cout << "Ð—Ð°ÑˆÐ¸Ñ„Ñ€Ð¾Ð²Ð°Ð½Ð½Ð¾Ðµ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ: " << encrypted_text << endl
+		<< "Ð Ð°ÑÑˆÐ¸Ñ„Ñ€Ð¾Ð²Ð°Ð½Ð½Ð¾Ðµ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ: " << decrypted_text << endl;
 
 	return 0;
 }
